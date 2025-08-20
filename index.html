@@ -122,24 +122,45 @@
             font-family: myFont;
             font-size: 3.0rem;
             z-index: 1100;
-            pointer-events: none; /* prevents interference with tiles */
+            
         }
+
+.backtohome{
+    position: absolute;
+    top: 90%;
+    left: -30%;
+    width: 100vw;
+    text-align: center;
+    color: white;
+    font-family: myFont;
+    z-index: 2100;
+    pointer-events: auto; /* allow clicking */
+    font-size: 2rem;
+}
+
+
     </style>
 </head>
 <body>
     <h1 class="page-title"> Yubitani Photo And Art Gallery</h1>
     <div id="tiles"></div>
 
+     <a href="https://kyubitani.netlify.app/" class="backtohome">Back to main page</a>
+
     <!-- Image Carousel -->
     <div id="image-track" data-mouse-down-at="0" data-prev-percentage="0">
         <img class="image" src="assets/mangadrawing.jpeg" draggable="false" />
         <img class="image" src="assets/1scroll.JPG" draggable="false" />
-        <img class="image" src="assets/2scroll.jpg" draggable="false" />
+        <img class="image" src="assets/2scroll.png" draggable="false" />
         <img class="image" src="assets/3scroll.JPG" draggable="false" />
         <img class="image" src="assets/cartoon.jpg" draggable="false" />
-        <img class="image" src="https://i.pinimg.com/1200x/2d/a4/b5/2da4b5a8f86ab813f67d25281da80260.jpg" draggable="false" />
-        <img class="image" src="assets/6scroll.JPG" draggable="false" />
+        <img class="image" src="assets/4scroll.JPEG" draggable="false" />
+        <img class="image" src="assets/5scroll.JPEG" draggable="false" />
         <img class="image" src="assets/pretty.jpeg" draggable="false" />
+        <img class="image" src="assets/6scroll.JPG" draggable="false" />
+        <img class="image" src="assets/7scroll.JPEG" draggable="false" />
+        <img class="image" src="assets/8scroll.JPG" draggable="false" />
+        
     </div>
 
     <!-- Pop-out overlay -->
