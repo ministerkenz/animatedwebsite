@@ -1,23 +1,58 @@
-// Entire scrolling effect
+// Entire scrolling effect with touch support
 const track = document.getElementById("image-track");
 let isMouseDown = false;
+let isTouchDevice = 'ontouchstart' in window;
 
+// Mouse events
 window.onmousedown = e => {
-    track.dataset.mouseDownAt = e.clientX;
-    isMouseDown = true;
+    if (!isTouchDevice) {
+        track.dataset.mouseDownAt = e.clientX;
+        isMouseDown = true;
+    }
 }
 
 window.onmouseup = () => {
-    track.dataset.mouseDownAt = "0";
-    track.dataset.prevPercentage = track.dataset.percentage;
-    isMouseDown = false;
+    if (!isTouchDevice) {
+        track.dataset.mouseDownAt = "0";
+        track.dataset.prevPercentage = track.dataset.percentage;
+        isMouseDown = false;
+    }
 }
 
 window.onmousemove = e => {
-    if(track.dataset.mouseDownAt === "0") return;
+    if (!isTouchDevice && track.dataset.mouseDownAt !== "0") {
+        handleMove(e.clientX);
+    }
+}
 
-    const mouseDelta = parseFloat(track.dataset.mouseDownAt) - e.clientX,
-        maxDelta = window.innerWidth / 2;
+// Touch events
+window.ontouchstart = e => {
+    if (isTouchDevice) {
+        track.dataset.mouseDownAt = e.touches[0].clientX;
+        isMouseDown = true;
+        e.preventDefault();
+    }
+}
+
+window.ontouchend = () => {
+    if (isTouchDevice) {
+        track.dataset.mouseDownAt = "0";
+        track.dataset.prevPercentage = track.dataset.percentage;
+        isMouseDown = false;
+    }
+}
+
+window.ontouchmove = e => {
+    if (isTouchDevice && track.dataset.mouseDownAt !== "0") {
+        handleMove(e.touches[0].clientX);
+        e.preventDefault();
+    }
+}
+
+// Common move handler
+function handleMove(clientX) {
+    const mouseDelta = parseFloat(track.dataset.mouseDownAt) - clientX;
+    const maxDelta = window.innerWidth / 2;
 
     const percentage = (mouseDelta / maxDelta) * -100;
     let nextPercentage = parseFloat(track.dataset.prevPercentage) + percentage;
@@ -44,9 +79,9 @@ const popupOverlay = document.getElementById("popup-overlay");
 const popupImage = document.getElementById("popup-image");
 const closeButton = document.getElementById("close-button");
 
-// Add click event to all images
+// Add click/touch event to all images
 document.querySelectorAll('.image').forEach(image => {
-    image.addEventListener('click', (e) => {
+    const handleImageClick = (e) => {
         // Only trigger if not dragging
         if (!isMouseDown) {
             popupImage.src = image.src;
@@ -60,7 +95,13 @@ document.querySelectorAll('.image').forEach(image => {
                 easing: 'easeOutBack'
             });
         }
-    });
+        e.preventDefault();
+    };
+
+    image.addEventListener('click', handleImageClick);
+    if (isTouchDevice) {
+        image.addEventListener('touchend', handleImageClick);
+    }
 });
 
 // Close popup functionality
@@ -77,11 +118,23 @@ const closePopup = () => {
 };
 
 closeButton.addEventListener('click', closePopup);
+if (isTouchDevice) {
+    closeButton.addEventListener('touchend', closePopup);
+}
+
 popupOverlay.addEventListener('click', (e) => {
     if (e.target === popupOverlay) {
         closePopup();
     }
 });
+
+if (isTouchDevice) {
+    popupOverlay.addEventListener('touchend', (e) => {
+        if (e.target === popupOverlay) {
+            closePopup();
+        }
+    });
+}
 
 // Close on Escape key
 document.addEventListener('keydown', (e) => {
@@ -90,7 +143,7 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Entire tile effect
+// Entire tile effect with touch support
 const wrapper = document.getElementById("tiles");
 
 let columns = 0;
@@ -125,7 +178,17 @@ const handleonClick = index => {
 const createTile = index => {
     const tile = document.createElement("div");
     tile.classList.add("tile");
-    tile.onclick = e => handleonClick(index);
+    
+    const handleTileClick = (e) => {
+        handleonClick(index);
+        e.preventDefault();
+    };
+
+    tile.onclick = handleTileClick;
+    if (isTouchDevice) {
+        tile.ontouchend = handleTileClick;
+    }
+    
     return tile;
 }
 
@@ -138,8 +201,10 @@ const createTiles = quantity => {
 const createGrid = () => {
     wrapper.innerHTML = "";
 
-    columns = Math.floor(document.body.clientWidth / 50);
-    rows = Math.floor(document.body.clientHeight / 50);
+    // Adjust tile size for mobile
+    const tileSize = window.innerWidth < 768 ? 30 : 50;
+    columns = Math.floor(document.body.clientWidth / tileSize);
+    rows = Math.floor(document.body.clientHeight / tileSize);
 
     wrapper.style.setProperty("--columns", columns);
     wrapper.style.setProperty("--rows", rows);
@@ -150,3 +215,10 @@ const createGrid = () => {
 createGrid();
 
 window.onresize = () => createGrid();
+
+// Prevent default touch behaviors that might interfere
+document.addEventListener('touchmove', function(e) {
+    if (e.target.closest('#image-track') || e.target.closest('#tiles')) {
+        e.preventDefault();
+    }
+}, { passive: false });

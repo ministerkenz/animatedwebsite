@@ -4,6 +4,7 @@ body {
     background-color: black;
     margin: 0rem;
     overflow: hidden;
+    touch-action: none;
 }
 
 #tiles {
@@ -26,6 +27,8 @@ body {
     object-position: center;
     cursor: pointer;
     transition: transform 0.3s ease;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 #image-track > .image:hover {
@@ -68,6 +71,7 @@ body {
     max-height: 90vh;
     object-fit: contain;
     border-radius: 10px;
+    z-index: 999;
     box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
     transform: scale(0.8);
     transition: transform 0.3s ease;
@@ -86,31 +90,100 @@ body {
     cursor: pointer;
     z-index: 1001;
     transition: color 0.3s ease;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .close-button:hover {
     color: #ff6b6b;
 }
+
 @font-face {
     font-family: myFont;
-    src: url(delta.ttf) format('truetype');
+    src: url('delta.ttf') format('truetype');
 }
+
 h1 {
     font-family: myFont;
     color: white;
     text-align: center;
     margin-top: 20px;
     font-size: 2.5rem;
-    z-index: 1100;
+    z-index: 900;
     position: relative;
 }
+
 .page-title {
     position: absolute;
-    top: 3%;
+    top: 5%;
+    left: 0%;
+    width: 100vw;
+    text-align: center;
+    color: white;
+    font-family: myFont;
+    font-size: 3.0rem;
+    z-index: 1100;
+}
+
+.backtohome{
+    position: absolute;
+    top: 90%;
     left: -30%;
     width: 100vw;
     text-align: center;
     color: white;
     font-family: myFont;
+    z-index: 2100;
+    pointer-events: auto;
     font-size: 2rem;
+}
+
+/* Mobile specific styles */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 1.8rem;
+        top: 3%;
+    }
+
+    .backtohome {
+        font-size: 1.2rem;
+        top: 93%;
+    }
+
+    #image-track > .image {
+        width: 35vmin;
+        height: 50vmin;
+    }
+
+    .close-button {
+        font-size: 30px;
+        top: 15px;
+        right: 20px;
+    }
+
+    .popup-image {
+        max-width: 95vw;
+        max-height: 85vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 1.4rem;
+        top: 2%;
+    }
+
+    .backtohome {
+        font-size: 1rem;
+    }
+
+    #image-track > .image {
+        width: 32vmin;
+        height: 45vmin;
+        gap: 2vmin;
+    }
+
+    #image-track {
+        gap: 2vmin;
+    }
 }
